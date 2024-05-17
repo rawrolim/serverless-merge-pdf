@@ -1,0 +1,29 @@
+s3:
+  handler: src/s3.handler
+  events:
+    - http:
+        path: set-s3-pdf
+        method: GET
+        cors: true
+test:
+  handler: src/test.handler
+  events:
+    - http:
+        path: test
+        method: GET
+        cors: true
+sendEmail:
+  handler: src/sendEmail.handler
+  events:
+    - http:
+        path: sendEmail
+        method: GET
+        cors: true
+cron:
+  handler: src/cron.handler
+  events:
+#    - schedule: rate(5 minute)
+    - http:
+        path: cron
+        method: GET
+        cors: true

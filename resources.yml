@@ -1,0 +1,45 @@
+Resources:
+  pdfBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: bucket-pdf-test-rawlinson
+
+  mergePdfFrontend:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: bucket-merge-pdf-frontend
+      WebsiteConfiguration:
+        IndexDocument: index.html
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+  ReactAppBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: 
+        Ref: mergePdfFrontend
+      PolicyDocument:
+        Statement:
+          - Action: 's3:GetObject'
+            Effect: Allow
+            Resource: 
+              Fn::Join:
+                - ''
+                - - 'arn:aws:s3:::'
+                  - Ref: mergePdfFrontend
+                  - /*
+            Principal: '*'
+
+  GatewayResponse:
+    Type: AWS::ApiGateway::GatewayResponse
+    Properties:
+      ResponseParameters:
+        gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+      ResponseType: ACCESS_DENIED
+      RestApiId:
+        Ref: ApiGatewayRestApi
